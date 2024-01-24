@@ -1,0 +1,73 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id Int @id @default(autoincrement())
+
+  email     String? @unique @db.VarChar(255)
+  lastname  String? @map("last_name") @db.VarChar(255)
+  firstname String? @map("first_name") @db.VarChar(255)
+  password  String? @db.VarChar(255)
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at") @db.DateTime(0)
+
+  like     Like[]
+  answer   Answer[]
+  question Question[]
+}
+
+model Question {
+  id Int @id @default(autoincrement())
+
+  title       String? @db.VarChar(255)
+  descreption String? @db.VarChar(255)
+
+  user   User? @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: SetNull)
+  userId Int?  @map("user_id")
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at") @db.DateTime(0)
+
+  like   Like[]
+  answer Answer[]
+}
+
+model Answer {
+  id Int @id @default(autoincrement())
+
+  message String? @db.VarChar(255)
+
+  user       User?     @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: SetNull)
+  userId     Int?      @map("user_id")
+  question   Question? @relation(fields: [questionId], references: [id], onUpdate: Cascade, onDelete: SetNull)
+  questionId Int?      @map("question_id")
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at") @db.DateTime(0)
+}
+
+model Like {
+  id Int @id @default(autoincrement())
+
+  user       User?     @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: SetNull)
+  userId     Int?      @map("user_id")
+  question   Question? @relation(fields: [questionId], references: [id], onUpdate: Cascade, onDelete: SetNull)
+  questionId Int?      @map("question_id")
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at") @db.DateTime(0)
+}

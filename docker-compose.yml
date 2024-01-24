@@ -1,0 +1,16 @@
+version: '3.2'
+
+services:
+  db:
+    platform: linux/amd64
+    image: mysql:5.7
+    container_name: qapp
+    restart: always
+    volumes:
+      - datavolume:/var/lib/mysql
+    ports:
+      - '6604:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: 12345678
+volumes:
+  datavolume:
